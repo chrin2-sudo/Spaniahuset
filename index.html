@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>Spaniahuset</title>
+<style>
+:root{--bg:#f4f7f6;--card:#fff;--ink:#17211f;--muted:#6b7774;--line:#e3e9e7;--accent:#0f766e;--accent2:#dff3ef;--danger:#b42318;--warn:#9a6700}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:linear-gradient(135deg,#0f766e,#145e59);color:#fff;padding:22px 18px 18px;position:sticky;top:0;z-index:5}
+.head{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center}.brand{font-size:24px;font-weight:800}.sub{opacity:.82;font-size:13px;margin-top:2px}
+main{max-width:900px;margin:auto;padding:18px 14px 95px}.tabs{display:flex;gap:7px;overflow:auto;margin:-2px 0 16px;padding-bottom:3px}.tab{border:0;background:#e6ecea;color:#41504c;border-radius:999px;padding:10px 14px;white-space:nowrap;font-weight:700}.tab.active{background:var(--accent);color:#fff}
+.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:0 2px 10px #00000008;margin-bottom:12px}.hero{padding:20px}.label{font-size:13px;color:var(--muted);font-weight:700}.value{font-size:26px;font-weight:800;margin-top:5px}.small{font-size:14px;color:var(--muted)}h2{font-size:20px;margin:8px 0 12px}h3{margin:0 0 8px}
+.badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800}.free{background:#e6f6ed;color:#147a45}.booked{background:#fde8e7;color:#a1261d}.blocked{background:#eceff1;color:#59636a}
+button.primary{width:100%;background:var(--accent);color:white;border:0;border-radius:12px;padding:13px;font-size:16px;font-weight:800}.secondary{background:#eef3f2;border:1px solid var(--line);border-radius:11px;padding:10px 12px;font-weight:700;color:var(--ink)}
+form{display:grid;gap:12px}label{font-size:13px;font-weight:750;color:#44514e}input,select,textarea{width:100%;margin-top:5px;padding:12px;border:1px solid #cfd9d6;border-radius:11px;background:#fff;font-size:16px}textarea{min-height:90px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.notice{padding:12px 14px;border-radius:12px;background:#f5f8f7;border:1px solid var(--line);font-size:14px}.notice.warn{background:#fff8e8;border-color:#f2dfae}.money{font-size:24px;font-weight:850}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.dow{font-size:11px;text-align:center;color:var(--muted);font-weight:800;padding:4px}.day{min-height:66px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:6px;font-size:12px}.day strong{display:block;font-size:14px}.day.booked{background:#fff0ef}.day.blocked{background:#f0f2f3}.day.free{background:#f0faf5}.day.empty{background:transparent;border:0}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--muted)}
+.item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.danger{color:var(--danger)}.success{color:#147a45}
+nav.bottom{position:fixed;bottom:0;left:0;right:0;background:#ffffffee;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px max(12px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:10}.bottom-inner{width:min(900px,100%);display:grid;grid-template-columns:repeat(5,1fr);gap:4px}.navbtn{border:0;background:none;padding:7px 2px;border-radius:12px;color:#66716e;font-size:11px}.navbtn b{display:block;font-size:20px;margin-bottom:2px}.navbtn.active{background:#e6f4f1;color:var(--accent)}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}main{padding-left:20px;padding-right:20px}.card{padding:20px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div><div class="brand">🏠 Spaniahuset</div><div class="sub">Privat utleie · Costa Blanca</div></div><span class="badge" style="background:#ffffff22;color:#fff">Eier</span></div></header>
+
+<main>
+<div class="tabs" id="tabs">
+<button class="tab active" data-view="home">Oversikt</button><button class="tab" data-view="calendar">Kalender</button><button class="tab" data-view="booking">Booking</button><button class="tab" data-view="power">Strøm</button><button class="tab" data-view="info">Huset</button>
+</div>
+
+<section id="home" class="view active">
+<div class="card hero"><div class="label">Neste gjest</div><div class="value" id="nextGuest">Ingen registrert</div><div class="small" id="nextDates">–</div></div>
+<div class="grid">
+<div class="card"><div class="label">Ledige perioder</div><div class="value" id="freeCount">–</div></div>
+<div class="card"><div class="label">Siste strømforbruk</div><div class="value" id="lastKwh">–</div></div>
+<div class="card"><div class="label">Strømpris</div><div class="value">1,25 kr</div><div class="small">per kWh</div></div>
+<div class="card"><div class="label">Status</div><div class="value" style="font-size:20px">Klar</div><div class="small">første versjon</div></div>
+</div>
+<div class="card"><h2>Hurtigvalg</h2><button class="primary" onclick="showView('booking')">＋ Registrer booking</button></div>
+<div class="notice">Dette er første versjon. Data lagres lokalt i nettleseren på denne enheten. Når design og arbeidsflyt er slik du vil ha den, kobler vi den til en felles database slik at du og gjestene ser de samme bookingene.</div>
+</section>
+
+<section id="calendar" class="view">
+<div class="card"><div class="calendar-head"><button class="secondary" onclick="changeMonth(-1)">‹</button><h2 id="monthTitle" style="margin:0"></h2><button class="secondary" onclick="changeMonth(1)">›</button></div><div class="calendar" id="calendarGrid"></div><div class="legend"><span>🟢 Ledig</span><span>🔴 Booket</span><span>⚪ Blokkert</span></div></div>
+<div class="card"><h3>Registrerte bookinger</h3><div id="bookingList"></div></div>
+</section>
+
+<section id="booking" class="view">
+<div class="card"><h2>Ny booking</h2><form id="bookingForm">
+<label>Navn<input id="guest" required placeholder="F.eks. Ola Nordmann"></label>
+<label>E-post<input id="email" type="email" placeholder="gjest@epost.no"></label>
+<div class="row"><label>Fra<input id="from" type="date" required></label><label>Til<input id="to" type="date" required></label></div>
+<label>Type<select id="type"><option>Privat gjest</option><option>Familie</option><option>Venner</option><option>Annet</option></select></label>
+<label>Notat<textarea id="note" placeholder="Flyinformasjon, sen ankomst osv."></textarea></label>
+<button class="primary">Lagre booking</button></form></div>
+</section>
+
+<section id="power" class="view">
+<div class="card"><h2>Strømmåler</h2><p class="small">Registrer målerstanden ved ankomst og avreise. Bilder kan kobles til senere.</p>
+<form id="powerForm"><div class="row"><label>Ankomst (kWh)<input id="start" type="number" step="1" required placeholder="12843"></label><label>Avreise (kWh)<input id="end" type="number" step="1" required placeholder="13021"></label></div><label>Pris per kWh<input id="price" type="number" step="0.01" value="1.25"></label><button class="primary">Beregn og lagre</button></form>
+<div id="powerResult" style="margin-top:14px"></div></div>
+<div class="card"><h3>Siste registreringer</h3><div id="powerList"></div></div>
+</section>
+
+<section id="info" class="view">
+<div class="card"><h2>Huset i Spania</h2><div class="item"><span>📍 Adresse</span><b>Legges inn</b></div><div class="item"><span>📶 Wi-Fi</span><b>Legges inn</b></div><div class="item"><span>🔑 Innsjekk</span><b>15:00</b></div><div class="item"><span>🚪 Utsjekk</span><b>10:00</b></div></div>
+<div class="card"><h2>Husregler</h2><p class="small">Legges inn når du ønsker det. Her kan vi også legge inn informasjon om basseng, AC, søppel, nøkler, alarm og lokale kontakter.</p></div>
+</section>
+</main>
+
+<nav class="bottom"><div class="bottom-inner">
+<button class="navbtn active" data-view="home"><b>⌂</b>Oversikt</button><button class="navbtn" data-view="calendar"><b>▦</b>Kalender</button><button class="navbtn" data-view="booking"><b>＋</b>Booking</button><button class="navbtn" data-view="power"><b>⚡</b>Strøm</button><button class="navbtn" data-view="info"><b>⌂</b>Huset</button>
+</div></nav>
+
+<script>
+const KEY='spaniahuset_v1';
+let data=JSON.parse(localStorage.getItem(KEY)||'{"bookings":[],"power":[]}');
+let month=new Date(); month.setDate(1);
+const save=()=>localStorage.setItem(KEY,JSON.stringify(data));
+function showView(id){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===id));if(id==='calendar')renderCalendar();renderHome();renderPower();}
+document.querySelectorAll('[data-view]').forEach(x=>x.onclick=()=>showView(x.dataset.view));
+function fmt(d){return new Date(d+'T12:00:00').toLocaleDateString('nb-NO',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function renderHome(){let bs=[...data.bookings].sort((a,b)=>a.from.localeCompare(b.from));let today=new Date().toISOString().slice(0,10),n=bs.find(b=>b.to>=today);document.getElementById('nextGuest').textContent=n?n.guest:'Ingen registrert';document.getElementById('nextDates').textContent=n?`${fmt(n.from)} – ${fmt(n.to)}`:'–';document.getElementById('freeCount').textContent='Åpen';let p=data.power[0];document.getElementById('lastKwh').textContent=p?p.kwh+' kWh':'–'}
+function renderCalendar(){let y=month.getFullYear(),m=month.getMonth();document.getElementById('monthTitle').textContent=month.toLocaleDateString('nb-NO',{month:'long',year:'numeric'});let first=new Date(y,m,1),days=new Date(y,m+1,0).getDate(),start=(first.getDay()+6)%7,g=document.getElementById('calendarGrid');g.innerHTML='';['Ma','Ti','On','To','Fr','Lø','Sø'].forEach(x=>{let d=document.createElement('div');d.className='dow';d.textContent=x;g.appendChild(d)});for(let i=0;i<start;i++){let d=document.createElement('div');d.className='day empty';g.appendChild(d)}for(let day=1;day<=days;day++){let iso=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,b=data.bookings.find(x=>iso>=x.from&&iso<=x.to),d=document.createElement('div');d.className='day '+(b?'booked':'free');d.innerHTML=`<strong>${day}</strong>${b?'<span>🔴 '+b.guest.split(' ')[0]+'</span>':'<span>Ledig</span>'}`;g.appendChild(d)}document.getElementById('bookingList').innerHTML=data.bookings.length?data.bookings.map(b=>`<div class="item"><div><b>${b.guest}</b><div class="small">${fmt(b.from)} – ${fmt(b.to)}</div></div><button class="secondary danger" onclick="removeBooking('${b.id}')">Slett</button></div>`).join(''):'<div class="small">Ingen bookinger ennå.</div>'}
+function changeMonth(n){month.setMonth(month.getMonth()+n);renderCalendar()}
+function removeBooking(id){data.bookings=data.bookings.filter(b=>b.id!==id);save();renderCalendar();renderHome()}
+document.getElementById('bookingForm').onsubmit=e=>{e.preventDefault();let b={id:Date.now().toString(),guest:guest.value,email:email.value,from:from.value,to:to.value,type:type.value,note:note.value};if(b.to<b.from)return alert('Til-dato må være etter fra-dato.');if(data.bookings.some(x=>b.from<=x.to&&b.to>=x.from))return alert('Datoene overlapper en eksisterende booking.');data.bookings.push(b);save();e.target.reset();alert('Bookingen er lagret.');showView('calendar')}
+document.getElementById('powerForm').onsubmit=e=>{e.preventDefault();let s=Number(start.value),en=Number(end.value),pr=Number(price.value);if(en<s)return alert('Avreise kan ikke være lavere enn ankomst.');let p={date:new Date().toISOString(),start:s,end:en,kwh:en-s,cost:(en-s)*pr};data.power.unshift(p);data.power=data.power.slice(0,10);save();document.getElementById('powerResult').innerHTML=`<div class="notice"><div class="label">Beregnet forbruk</div><div class="money">${p.kwh} kWh · ${p.cost.toFixed(2).replace('.',',')} kr</div></div>`;e.target.reset();price.value='1.25';renderPower();renderHome()}
+function renderPower(){document.getElementById('powerList').innerHTML=data.power.length?data.power.map(p=>`<div class="item"><div><b>${p.kwh} kWh</b><div class="small">${p.start} → ${p.end}</div></div><b>${p.cost.toFixed(2).replace('.',',')} kr</b></div>`).join(''):'<div class="small">Ingen registreringer ennå.</div>'}
+renderHome();renderCalendar();renderPower();
+</script>
+</body>
+</html>
